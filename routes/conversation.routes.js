@@ -4,6 +4,7 @@ import {
   getOrCreateLatestConversation,
   getConversation,
   messageAdd,
+  getUserCharacterConversations,
 } from "../controllers/conversation.controller.js";
 const conversationRouter = Router();
 
@@ -15,5 +16,6 @@ conversationRouter.post(
   getOrCreateLatestConversation
 );
 conversationRouter.get("/:id", getConversation);
+conversationRouter.get("/user-character/:id", getUserCharacterConversations);
 
 export default conversationRouter;

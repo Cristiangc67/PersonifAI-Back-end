@@ -29,7 +29,7 @@ export const createMask = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Mask created successfully",
-      data: { mask },
+      data: mask,
     });
   } catch (error) {
     await session.abortTransaction();

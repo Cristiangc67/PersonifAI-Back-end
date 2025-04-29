@@ -172,15 +172,15 @@ export const deleteCharacter = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const result = await cloudinary.uploader.destroy(`cards/${id}`);
+    const result = await cloudinary.uploader.destroy(id);
     console.log("Result:", result);
 
-    const toErase = await Character.findById(id, { session });
+    const toErase = await Character.findById(id);
     if (!toErase) {
       throw new Error("Personaje no encontrado");
     }
     await User.findByIdAndUpdate(
-      erased.creator._id,
+      toErase.creator._id,
       { $pull: { createdCharacters: id } },
       { session }
     );

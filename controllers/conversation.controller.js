@@ -171,3 +171,34 @@ export const messageAdd = async (req, res) => {
     });
   }
 };
+
+export const getUserCharacterConversations = async (req, res) => {
+  try {
+    const characterId = req.query.characterId;
+    const userId = req.params.id;
+    const conversations = await Conversation.find({
+      user: userId,
+      character: characterId,
+    })
+      .select("_id createdAt")
+      .sort({ createdAt: -1 });
+    if (!conversations) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Conversation obtained",
+      data: conversations,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
