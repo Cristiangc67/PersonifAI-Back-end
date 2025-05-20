@@ -5,6 +5,7 @@ import {
   getConversation,
   messageAdd,
   getUserCharacterConversations,
+  deleteConversation
 } from "../controllers/conversation.controller.js";
 const conversationRouter = Router();
 
@@ -17,5 +18,6 @@ conversationRouter.post(
 );
 conversationRouter.get("/:id", getConversation);
 conversationRouter.get("/user-character/:id", getUserCharacterConversations);
+conversationRouter.delete("/:id",deleteConversation)
 
 export default conversationRouter;

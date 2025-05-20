@@ -23,6 +23,6 @@ characterRouter.patch(
   upload.single("image"),
   updateCharacter
 );
-characterRouter.delete("/:id", authorize, deleteCharacter);
+characterRouter.delete("/:id", authorize,authorizeCharacterOwner, deleteCharacter);
 
 export default characterRouter;

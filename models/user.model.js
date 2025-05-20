@@ -32,14 +32,10 @@ const userSchema = new mongoose.Schema(
     ],
     subscriptionPlan: {
       type: String,
-      enum: ["free", "intelligent", "turing"],
+      enum: ["free", "turing", "premium"],
       default: "free",
     },
     masks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Mask" }],
-    apiKeys: {
-      openAiKey: String,
-      geminiApiKey: String,
-    },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },

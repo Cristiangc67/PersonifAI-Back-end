@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Message from "./message.model.js";
 
 const conversationSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -10,12 +11,17 @@ const conversationSchema = new mongoose.Schema({
   },
   provider: {
     type: String,
-    enum: ["openai", "gemini", "deepseek"],
+    enum: ["openai", "gemini", "deepseek","llama"],
     required: true,
   },
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
-  createdAt: { type: Date, default: Date.now },
+},{ timestamps: true });
+
+conversationSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  await Message.deleteMany({ conversationId: this._id });
+  next();
 });
+
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

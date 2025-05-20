@@ -140,12 +140,16 @@ export const updateUser = async (req, res, next) => {
 };
 
 export const toggleFollower = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     if (req.body.follower === req.params.id) {
-      return console.log("You can't follow yourself");
+      await session.abortTransaction(); 
+      await session.endSession();
+      return res.status(400).json({message:"You can't follow yourself"});
     }
-    const follower = await User.findById(req.body.follower);
-    const user = await User.findById(req.params.id);
+    const follower = await User.findById(req.body.follower).session(session);
+    const user = await User.findById(req.params.id).session(session);
 
     if (!follower || !user) {
       return res.status(404).json({ message: "User not found" });
@@ -160,19 +164,22 @@ export const toggleFollower = async (req, res, next) => {
         (userId) => userId.toString() !== req.body.follower
       );
 
-      console.log("Ya seguias a este usuario, ya no lo sigues mas");
+  
     } else {
       user.followers.push(follower);
       follower.following.push(user);
     }
 
-    await user.save();
-    await follower.save();
+    await user.save({session});
+    await follower.save({session});
+    await session.commitTransaction();
+    await session.endSession();
 
     res.status(200).json({ message: "Usuario seguido con exito" });
   } catch (error) {
     console.log(error);
-    console.log("**************error al agregar follower******************");
+    await session.abortTransaction(); 
+    await session.endSession()
   }
 };
 

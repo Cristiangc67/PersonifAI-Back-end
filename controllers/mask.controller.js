@@ -8,15 +8,15 @@ export const createMask = async (req, res, next) => {
   try {
     const { name, description, userId } = req.body;
 
-    // Validate input
+ 
     if (!name || !userId) {
       throw new Error("Name and userId are required");
     }
 
-    // Create the mask
+
     const [mask] = await Mask.create([{ name, description }], { session });
 
-    // Update the user's masks array with the mask ID
+
     await User.findByIdAndUpdate(
       userId,
       { $push: { masks: mask._id } },
@@ -34,7 +34,7 @@ export const createMask = async (req, res, next) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    next(error); // Pass error to error-handling middleware
+    next(); 
   }
 };
 
@@ -45,21 +45,20 @@ export const deleteMask = async (req, res, next) => {
     const { id } = req.params;
     const { userId } = req.body;
 
-    // Validate input
+
     if (!userId) {
       throw new Error("User ID is required");
     }
 
-    // Find the mask
+
     const mask = await Mask.findById(id).session(session);
     if (!mask) {
       throw new Error("Máscara no encontrada");
     }
 
-    // Remove the mask ID from the user's masks array
+  
     await User.findByIdAndUpdate(userId, { $pull: { masks: id } }, { session });
 
-    // Delete the mask
     await Mask.findByIdAndDelete(id).session(session);
 
     await session.commitTransaction();
@@ -80,13 +79,12 @@ export const updateMask = async (req, res, next) => {
     const { id } = req.params;
     const { name, description } = req.body;
 
-    // Find the mask
+
     const mask = await Mask.findById(id).session(session);
     if (!mask) {
       throw new Error("Máscara no encontrada");
     }
 
-    // Update the mask
     const newMask = await Mask.findByIdAndUpdate(
       id,
       { name, description },
@@ -94,7 +92,7 @@ export const updateMask = async (req, res, next) => {
       { session }
     );
 
-    // Use shorthand for setting fields
+
     await session.commitTransaction();
     session.endSession();
 

@@ -8,7 +8,6 @@ import authorize from "../middlewares/auth.middleware.js";
 
 const maskRouter = Router();
 
-// path
 maskRouter.post("/", authorize, createMask);
 maskRouter.delete("/:id", deleteMask);
 maskRouter.put("/:id", updateMask);

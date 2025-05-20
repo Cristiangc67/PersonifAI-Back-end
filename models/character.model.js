@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Conversation from "./conversation.model.js";
 
 const characterSchema = new mongoose.Schema(
   {
@@ -14,10 +15,7 @@ const characterSchema = new mongoose.Schema(
       minLength: 2,
       maxLength: 50,
     },
-    description: {
-      type: String,
-      maxLength: 1000,
-    },
+    description: String,
     cardDescription: {
       type: String,
       maxLength: 1000,
@@ -31,6 +29,16 @@ const characterSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+characterSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+  const characterId = this._id;
+  const conversations = await Conversation.find({ character: characterId });
+
+  for (const conv of conversations) {
+    await conv.deleteOne();
+  }
+
+  next();
+});
 
 const Character = mongoose.model("Character", characterSchema);
 

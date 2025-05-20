@@ -185,7 +185,7 @@ export const deleteCharacter = async (req, res, next) => {
       { session }
     );
 
-    await Character.findByIdAndDelete(id, { session });
+     await toErase.deleteOne({ session });
 
     await session.commitTransaction();
     session.endSession();
